@@ -16,7 +16,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SplashScreen" translatesAutoresizingMaskIntoConstraints="NO" id="FAm-5r-Zdy" userLabel="SplashScreen">
-                                <rect key="frame" x="160.33333333333334" y="413" width="72.666666666666657" height="76"/>
+                                <rect key="frame" x="160.33333333333331" y="413" width="73.666666666666657" height="76"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
