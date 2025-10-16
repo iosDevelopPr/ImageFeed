@@ -26,7 +26,7 @@ final class ProfileViewController: UIViewController {
     }
     
     // TODO:
-    @objc private func exitButtonTap(_ sender: Any) {
+    @objc private func didTapExitButton(_ sender: Any) {
     }
     
     private func SetupProfileImage() {
@@ -91,7 +91,7 @@ final class ProfileViewController: UIViewController {
         
         let exitImage = UIImage(named: "exit_button")
         exitButton.setImage(exitImage, for: .normal)
-        exitButton.addTarget(self, action: #selector(exitButtonTap(_:)), for: .touchUpInside)
+        exitButton.addTarget(self, action: #selector(didTapExitButton(_:)), for: .touchUpInside)
         
         exitButton.translatesAutoresizingMaskIntoConstraints = false
         

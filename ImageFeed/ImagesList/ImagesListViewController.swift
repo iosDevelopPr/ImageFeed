@@ -8,11 +8,10 @@
 import UIKit
 
 final class ImagesListViewController: UIViewController {
-    
-    private let showSingleImageSegueIdentifier = "ShowSingleImage"
 
     @IBOutlet private var tableView: UITableView!
     
+    private let showSingleImageSegueIdentifier = "ShowSingleImage"
     private let photosName: [String] = Array(0..<20).map { "Img\($0)" }
     
     private lazy var dateFormatter: DateFormatter = {
@@ -91,5 +90,33 @@ extension ImagesListViewController {
         let evenCell = indexPath.row % 2 == 0
         let likeImage = evenCell ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
         cell.likeButton.setImage(likeImage, for: .normal)
+        
+        initGradientView(cell)
+    }
+    
+    private func initGradientView(_ cell: ImagesListCell) {
+
+        let topColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.02).cgColor
+        let bottomColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.35).cgColor
+
+        let contentView = cell.subviews[0] as UIView
+        for subview in contentView.subviews {
+            if subview.accessibilityIdentifier == "dateView" {
+                
+                subview.layer.cornerRadius = 16
+                subview.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+                subview.layer.masksToBounds = true
+                
+                let gradientView = CAGradientLayer()
+                
+                gradientView.frame.size = subview.frame.size
+                gradientView.colors = [topColor, bottomColor]
+                gradientView.startPoint = CGPoint(x: 1.0, y: 0.0)
+                gradientView.endPoint = CGPoint(x: 1.0, y: 1.0)
+                
+                subview.layer.addSublayer(gradientView)
+            }
+        }
+
     }
 }
