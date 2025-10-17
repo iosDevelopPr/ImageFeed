@@ -11,6 +11,7 @@ final class ImagesListViewController: UIViewController {
 
     @IBOutlet private var tableView: UITableView!
     
+    private let showSingleImageSegueIdentifier = "ShowSingleImage"
     private let photosName: [String] = Array(0..<20).map { "Img\($0)" }
     
     private lazy var dateFormatter: DateFormatter = {
@@ -23,6 +24,23 @@ final class ImagesListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == showSingleImageSegueIdentifier {
+            guard
+                let viewController = segue.destination as? SingleImageViewController,
+                let indexPath = sender as? IndexPath
+            else {
+                assertionFailure("Invalid segue destination")
+                return
+            }
+            
+            let image = UIImage(named: photosName[indexPath.row])
+            viewController.image = image
+        } else {
+            super.prepare(for: segue, sender: sender)
+        }
     }
 }
 
@@ -44,8 +62,9 @@ extension ImagesListViewController: UITableViewDataSource {
 
 extension ImagesListViewController: UITableViewDelegate {
     
-    // TODO:
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) { }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
+    }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard let image = UIImage(named: photosName[indexPath.row]) else { return 0 }
@@ -69,7 +88,35 @@ extension ImagesListViewController {
         cell.dateLabel.text = dateFormatter.string(from: Date())
         
         let evenCell = indexPath.row % 2 == 0
-        let likeImage = evenCell ? UIImage(named: "like_on") : UIImage(named: "like_off")
+        let likeImage = evenCell ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
         cell.likeButton.setImage(likeImage, for: .normal)
+        
+        initGradientView(cell)
+    }
+    
+    private func initGradientView(_ cell: ImagesListCell) {
+
+        let topColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.02).cgColor
+        let bottomColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.35).cgColor
+
+        let contentView = cell.subviews[0] as UIView
+        for subview in contentView.subviews {
+            if subview.accessibilityIdentifier == "dateView" {
+                
+                subview.layer.cornerRadius = 16
+                subview.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+                subview.layer.masksToBounds = true
+                
+                let gradientView = CAGradientLayer()
+                
+                gradientView.frame.size = subview.frame.size
+                gradientView.colors = [topColor, bottomColor]
+                gradientView.startPoint = CGPoint(x: 1.0, y: 0.0)
+                gradientView.endPoint = CGPoint(x: 1.0, y: 1.0)
+                
+                subview.layer.addSublayer(gradientView)
+            }
+        }
+
     }
 }
