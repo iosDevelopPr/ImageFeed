@@ -18,19 +18,18 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        SetupProfileImage()
-        SetupNameLabel()
-        SetupLoginLabel()
-        SetupDescriptionLabel()
-        SetupExitButton()
+        setupProfileImage()
+        setupNameLabel()
+        setupLoginLabel()
+        setupDescriptionLabel()
+        setupExitButton()
     }
     
     // TODO:
     @objc private func didTapExitButton(_ sender: Any) {
     }
     
-    private func SetupProfileImage() {
-        
+    private func setupProfileImage() {
         let profileImage = UIImage(named: "profile_on")
         profileImageView.image = profileImage
 
@@ -48,8 +47,7 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    private func SetupNameLabel() {
-        
+    private func setupNameLabel() {
         nameLabel.text = "Екатерина Новикова"
         nameLabel.font = .systemFont(ofSize: 23, weight: .bold)
         nameLabel.textColor = UIColor(named: "YP White")
@@ -61,8 +59,7 @@ final class ProfileViewController: UIViewController {
         nameLabel.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 8).isActive = true
     }
     
-    private func SetupLoginLabel() {
-        
+    private func setupLoginLabel() {
         loginLabel.text = "@ekaterina_nov"
         loginLabel.font = .systemFont(ofSize: 13, weight: .regular)
         loginLabel.textColor = UIColor(named: "YP Gray")
@@ -74,8 +71,7 @@ final class ProfileViewController: UIViewController {
         loginLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8).isActive = true
     }
     
-    private func SetupDescriptionLabel() {
-        
+    private func setupDescriptionLabel() {
         descriptionLabel.text = "Hello, world!"
         descriptionLabel.font = .systemFont(ofSize: 13, weight: .regular)
         descriptionLabel.textColor = UIColor(named: "YP White")
@@ -87,8 +83,7 @@ final class ProfileViewController: UIViewController {
         descriptionLabel.topAnchor.constraint(equalTo: loginLabel.bottomAnchor, constant: 8).isActive = true
     }
     
-    private func SetupExitButton() {
-        
+    private func setupExitButton() {
         let exitImage = UIImage(named: "exit_button")
         exitButton.setImage(exitImage, for: .normal)
         exitButton.addTarget(self, action: #selector(didTapExitButton(_:)), for: .touchUpInside)
@@ -104,6 +99,5 @@ final class ProfileViewController: UIViewController {
             exitButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             exitButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 45)
         ])
-
     }
 }
