@@ -89,7 +89,7 @@ extension ImagesListViewController {
         cell.dateLabel.text = dateFormatter.string(from: Date())
         
         let evenCell = indexPath.row % 2 == 0
-        let likeImage = evenCell ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
+        let likeImage = evenCell ? UIImage(resource: .likeButtonOn) : UIImage(resource: .likeButtonOff)
         cell.likeButton.setImage(likeImage, for: .normal)
         
         initGradientView(cell)

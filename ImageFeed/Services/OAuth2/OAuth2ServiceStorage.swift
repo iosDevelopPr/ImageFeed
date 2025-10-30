@@ -8,7 +8,10 @@
 import Foundation
 
 final class OAuth2ServiceStorage {
+    static let shared: OAuth2ServiceStorage = OAuth2ServiceStorage()
     private let storage: UserDefaults = .standard
+
+    private init() {}
     
     private enum Keys: String {
         case accessToken = "accessToken"
@@ -16,7 +19,7 @@ final class OAuth2ServiceStorage {
     
     var token: String? {
         get {
-            return storage.string(forKey: Keys.accessToken.rawValue)
+            storage.string(forKey: Keys.accessToken.rawValue)
         } set {
             storage.set(newValue, forKey: Keys.accessToken.rawValue)
         }

@@ -8,6 +8,8 @@
 import Foundation
 
 struct NetworkClient {
+    private let log: Logging = .log
+    
     func fetchData(request: URLRequest, handler: @escaping (Result<Data, Error>) -> Void) {
         let fulfillHandlerOnMainThread: (Result<Data, Error>) -> Void = { result in
             DispatchQueue.main.async {
@@ -17,29 +19,28 @@ struct NetworkClient {
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error {
-                Logging.log.log(error)
+                log.log(error)
                 fulfillHandlerOnMainThread(.failure(error))
                 return
             }
             
             guard let resp = response as? HTTPURLResponse else {
                 let responsError = NetworkError.invalidRequest
-                Logging.log.log(responsError)
+                log.log(responsError)
                 fulfillHandlerOnMainThread(.failure(responsError))
                 return
             }
-               
-    
+            
             guard resp.statusCode >= 200 && resp.statusCode < 300 else {
                 let responsError = NetworkError.httpsStatusCode(resp.statusCode)
-                Logging.log.log(responsError)
+                log.log(responsError)
                 fulfillHandlerOnMainThread(.failure(responsError))
                 return
             }
     
             guard let data else {
                 let responsError = NetworkError.emptyData
-                Logging.log.log(responsError)
+                log.log(responsError)
                 fulfillHandlerOnMainThread(.failure(responsError))
                 return
             }

@@ -9,8 +9,8 @@ import UIKit
 
 final class AuthViewController: UIViewController {
     private let showWebViewSegueIdentifier = "ShowWebView"
-    private let oauth2Service = OAuth2Service.shared
-    private let oauthStorage = OAuth2ServiceStorage()
+    private let service: OAuth2Service = .shared
+    private let storage: OAuth2ServiceStorage = .shared
     
     weak var delegate: AuthViewControllerDelegate?
     
@@ -33,10 +33,10 @@ final class AuthViewController: UIViewController {
     }
 
     private func configureBackButton() {
-        navigationController?.navigationBar.backIndicatorImage = UIImage(named: "backward_button_black")
-        navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(named: "backward_button_black")
+        navigationController?.navigationBar.backIndicatorImage = UIImage(resource: .backwardButtonBlack)
+        navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(resource: .backwardButtonBlack)
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        navigationItem.backBarButtonItem?.tintColor = UIColor(named: "YP Black")
+        navigationItem.backBarButtonItem?.tintColor = UIColor(resource: .ypBlack)
     }
 }
 
@@ -49,7 +49,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
             
             switch result {
             case .success(let token):
-                self.oauthStorage.token = token
+                self.storage.token = token
                 self.delegate?.didAuthenticate(self)
             case .failure:
                 // TODO
@@ -65,7 +65,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
 
 extension AuthViewController {
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        oauth2Service.fetchOAuthToken(code) { result in
+        service.fetchOAuthToken(code) { result in
             completion(result)
         }
     }

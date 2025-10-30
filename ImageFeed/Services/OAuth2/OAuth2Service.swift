@@ -11,6 +11,7 @@ final class OAuth2Service {
     static let shared = OAuth2Service()
     private let networkClient = NetworkClient()
     private let decoder = JSONDecoder()
+    private let logging: Logging = .log
     
     private init() {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -29,11 +30,11 @@ final class OAuth2Service {
                     let jsonData = try self.decoder.decode(OAuthTokenResponseBody.self, from: data)
                     completion(.success(jsonData.accessToken))
                 } catch {
-                    Logging.log.log(error)
+                    self.logging.log(error)
                     completion(.failure(error))
                 }
             case .failure(let error):
-                Logging.log.log(error)
+                self.logging.log(error)
                 completion(.failure(error))
             }
         }
@@ -53,7 +54,7 @@ final class OAuth2Service {
         guard let url = urlComponents.url else { return nil }
         
         var request = URLRequest(url: url)
-        request.httpMethod = "POST"
+        request.httpMethod = HTTPMethod.post.rawValue
         
         return request
     }

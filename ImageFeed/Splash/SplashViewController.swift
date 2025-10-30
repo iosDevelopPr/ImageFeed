@@ -9,7 +9,7 @@ import UIKit
 
 final class SplashViewController: UIViewController {
     private let showAuthViewIdentifier = "ShowAuthView"
-    private let oauthStorage = OAuth2ServiceStorage()
+    private let oauthStorage: OAuth2ServiceStorage = .shared
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -22,7 +22,8 @@ final class SplashViewController: UIViewController {
     }
     
     private func switchToTabBarController() {
-        guard let window = UIApplication.shared.windows.first else {
+        guard let window = UIApplication.shared.connectedScenes
+            .flatMap({ ($0 as? UIWindowScene)?.windows ?? []}).first else {
             assertionFailure("Invalid window configuration")
             return
         }

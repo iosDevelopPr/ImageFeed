@@ -8,17 +8,19 @@
 import Foundation
 
 final class Logging {
-    static var log = Logging()
+    static let log = Logging()
+    private let queue = DispatchQueue(label: "ImageFeed.Logging", qos: .utility)
+    
     private init() {}
     
     func log(_ message: String) {
-        DispatchQueue.global().sync {
+        queue.sync {
             print("ImageFeed log: \(message)")
         }
     }
     
     func log(_ error: Error) {
-        DispatchQueue.global().sync {
+        queue.sync {
             assertionFailure("ImageFeed log: \(error.localizedDescription)")
         }
     }
