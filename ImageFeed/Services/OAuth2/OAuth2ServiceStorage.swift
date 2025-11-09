@@ -5,12 +5,11 @@
 //  Created by Igor on 28.10.2025.
 //
 
-import Foundation
+//import Foundation
+import SwiftKeychainWrapper
 
 final class OAuth2ServiceStorage {
     static let shared: OAuth2ServiceStorage = OAuth2ServiceStorage()
-    private let storage: UserDefaults = .standard
-
     private init() {}
     
     private enum Keys: String {
@@ -19,9 +18,13 @@ final class OAuth2ServiceStorage {
     
     var token: String? {
         get {
-            storage.string(forKey: Keys.accessToken.rawValue)
+            return KeychainWrapper.standard.string(forKey: Keys.accessToken.rawValue)
         } set {
-            storage.set(newValue, forKey: Keys.accessToken.rawValue)
+            if let token = newValue {
+                KeychainWrapper.standard.set(token, forKey: Keys.accessToken.rawValue)
+            } else {
+                KeychainWrapper.standard.removeObject(forKey: Keys.accessToken.rawValue)
+            }
         }
     }
 }
