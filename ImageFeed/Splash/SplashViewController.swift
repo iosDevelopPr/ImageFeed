@@ -58,13 +58,16 @@ final class SplashViewController: UIViewController {
     
     private func presentAuthViewController() {
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        guard let authViewController = storyboard.instantiateViewController(
-            withIdentifier: AuthViewIdentifier) as? AuthViewController else {
+        guard
+            let navigationController = storyboard.instantiateViewController(withIdentifier: "NavigationController") as? UINavigationController,
+            let authViewController = navigationController.topViewController as? AuthViewController
+        else {
+            assertionFailure("Invalid view controllers in storyboard")
             return
         }
         authViewController.delegate = self
-        authViewController.modalPresentationStyle = .fullScreen
-        present(authViewController, animated: true)
+        navigationController.modalPresentationStyle = .fullScreen
+        present(navigationController, animated: true)
     }
 }
 
