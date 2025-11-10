@@ -5,7 +5,7 @@
 //  Created by Igor on 05.11.2025.
 //
 
-import UIKit
+import Foundation
 
 final class ProfileService {
     static let shared = ProfileService()
