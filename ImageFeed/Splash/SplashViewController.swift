@@ -8,7 +8,6 @@
 import UIKit
 
 final class SplashViewController: UIViewController {
-    private let AuthViewIdentifier = "AuthViewController"
     private let TabBarIdentifier = "TabBarViewController"
 
     private let oauthStorage: OAuth2ServiceStorage = .shared
