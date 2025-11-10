@@ -9,8 +9,8 @@ import UIKit
 
 final class AuthViewController: UIViewController {
     private let showWebViewSegueIdentifier = "ShowWebView"
-    private let service: OAuth2Service = .shared
-    private let storage: OAuth2ServiceStorage = .shared
+    private let oauth2Service: OAuth2Service = .shared
+    private let oauth2Storage: OAuth2ServiceStorage = .shared
     
     weak var delegate: AuthViewControllerDelegate?
     
@@ -43,16 +43,18 @@ final class AuthViewController: UIViewController {
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         navigationController?.popViewController(animated: true)
+        UIBlockingProgressHUD.show()
         
-        fetchOAuthToken(code) { [weak self] result in
+        oauth2Service.fetchOAuthToken(code: code) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
             guard let self else { return }
             
             switch result {
             case .success(let token):
-                self.storage.token = token
+                self.oauth2Storage.token = token
                 self.delegate?.didAuthenticate(self)
             case .failure:
-                // TODO
+                self.showAuthErrorAlert()
                 break
             }
         }
@@ -64,9 +66,14 @@ extension AuthViewController: WebViewViewControllerDelegate {
 }
 
 extension AuthViewController {
-    func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        service.fetchOAuthToken(code) { result in
-            completion(result)
-        }
+    func showAuthErrorAlert() {
+        let alertController = UIAlertController(
+            title: "Что-то пошло не так :)",
+            message: "Не удалось войти в систему",
+            preferredStyle: .alert
+        )
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: nil)
     }
 }

@@ -6,14 +6,18 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
-    
     private let profileImageView = UIImageView()
     private let nameLabel = UILabel()
     private let loginLabel = UILabel()
     private let descriptionLabel = UILabel()
     private let exitButton = UIButton()
+    
+    private var profileImage: UIImage?
+    
+    private var profileImageServiceObserver: NSObjectProtocol?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,14 +27,34 @@ final class ProfileViewController: UIViewController {
         setupLoginLabel()
         setupDescriptionLabel()
         setupExitButton()
+        
+        guard let profileDetails = ProfileService.shared.profile else { return }
+        updateProfileDetails(profile: profileDetails)
+        
+        profileImageServiceObserver = NotificationCenter.default.addObserver(
+            forName: ProfileImageService.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
+            guard let self else { return }
+                self.updateAvatar()
+        }
+        updateAvatar()
     }
     
-    // TODO:
+    private func updateAvatar() {
+        guard let profileImageURL = ProfileImageService.shared.avatarURL,
+              let url = URL(string: profileImageURL) else { return }
+        
+        let processor = RoundCornerImageProcessor(cornerRadius: 50)
+        profileImageView.kf.setImage(with: url, placeholder: profileImage, options: [.processor(processor)])
+    }
+    
+    // TODO: будет реализовано в другом спринте
     @objc private func didTapExitButton(_ sender: Any) {
+        // Сейчас: для сброса для отладки
+        OAuth2ServiceStorage.shared.token = nil
     }
     
     private func setupProfileImage() {
-        let profileImage = UIImage(named: "profile_on")
+        profileImage = UIImage(resource: .profileOn)
         profileImageView.image = profileImage
 
         profileImageView.tintColor = .gray
@@ -48,9 +72,8 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupNameLabel() {
-        nameLabel.text = "Екатерина Новикова"
         nameLabel.font = .systemFont(ofSize: 23, weight: .bold)
-        nameLabel.textColor = UIColor(named: "YP White")
+        nameLabel.textColor = UIColor(resource: .ypWhite)
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(nameLabel)
@@ -60,9 +83,8 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupLoginLabel() {
-        loginLabel.text = "@ekaterina_nov"
         loginLabel.font = .systemFont(ofSize: 13, weight: .regular)
-        loginLabel.textColor = UIColor(named: "YP Gray")
+        loginLabel.textColor = UIColor(resource: .ypGray)
         loginLabel.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(loginLabel)
@@ -72,9 +94,8 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupDescriptionLabel() {
-        descriptionLabel.text = "Hello, world!"
         descriptionLabel.font = .systemFont(ofSize: 13, weight: .regular)
-        descriptionLabel.textColor = UIColor(named: "YP White")
+        descriptionLabel.textColor = UIColor(resource: .ypWhite)
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(descriptionLabel)
@@ -84,7 +105,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func setupExitButton() {
-        let exitImage = UIImage(named: "exit_button")
+        let exitImage = UIImage(resource: .exitButton)
         exitButton.setImage(exitImage, for: .normal)
         exitButton.addTarget(self, action: #selector(didTapExitButton(_:)), for: .touchUpInside)
         
@@ -99,5 +120,11 @@ final class ProfileViewController: UIViewController {
             exitButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             exitButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 45)
         ])
+    }
+    
+    private func updateProfileDetails(profile: Profile) {
+        nameLabel.text = profile.name
+        loginLabel.text = profile.loginName
+        descriptionLabel.text = profile.bio
     }
 }
