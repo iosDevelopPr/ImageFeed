@@ -12,7 +12,6 @@ final class OAuth2Service {
     
     private let decoder = JSONDecoder()
     private let urlSession: URLSession = .shared
-    private let logger: Logging = .shared
     
     private var task: URLSessionTask?
     private var lastCode: String?
@@ -38,17 +37,15 @@ final class OAuth2Service {
         
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
             DispatchQueue.main.async {
-                guard let self else { return }
-                
                 switch result {
                 case .success(let jsonData):
                     completion(.success(jsonData.accessToken))
                 case .failure(let error):
-                    self.logger.log("Failed to fetch OAuth token: \(error)")
+                    Logging.shared.log("Failed to fetch OAuth token: \(error)")
                     completion(.failure(error))
                 }
-                self.task = nil
-                self.lastCode = nil
+                self?.task = nil
+                self?.lastCode = nil
             }
         }
         
@@ -88,5 +85,16 @@ final class OAuth2Service {
         guard let url = urlComponents.url else { return nil }
         
         return URLRequest(url: url)
+    }
+}
+
+extension OAuth2Service {
+    func removeData() {
+        task?.cancel()
+        task = nil
+        
+        lastCode = nil
+        
+        OAuth2ServiceStorage.shared.token = nil
     }
 }

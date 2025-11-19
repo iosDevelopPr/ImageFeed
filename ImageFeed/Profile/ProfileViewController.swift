@@ -47,10 +47,8 @@ final class ProfileViewController: UIViewController {
         profileImageView.kf.setImage(with: url, placeholder: profileImage, options: [.processor(processor)])
     }
     
-    // TODO: будет реализовано в другом спринте
     @objc private func didTapExitButton(_ sender: Any) {
-        // Сейчас: для сброса для отладки
-        OAuth2ServiceStorage.shared.token = nil
+        showAuthErrorAlert()
     }
     
     private func setupProfileImage() {
@@ -59,6 +57,8 @@ final class ProfileViewController: UIViewController {
 
         profileImageView.tintColor = .gray
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
+        profileImageView.layer.cornerRadius = 35
+        profileImageView.layer.masksToBounds = true
         
         view.addSubview(profileImageView)
         
@@ -126,5 +126,22 @@ final class ProfileViewController: UIViewController {
         nameLabel.text = profile.name
         loginLabel.text = profile.loginName
         descriptionLabel.text = profile.bio
+    }
+}
+extension ProfileViewController {
+    func showAuthErrorAlert() {
+        let alertController = UIAlertController(
+            title: "Пока, пока!",
+            message: "Уверены, что хотите выйти?",
+            preferredStyle: .alert
+        )
+        let okAction = UIAlertAction(title: "Да", style: .default) { _ in
+            ProfileLogoutService.shared.removeData()
+        }
+        let noAction = UIAlertAction(title: "Нет", style: .default) { _ in }
+
+        alertController.addAction(okAction)
+        alertController.addAction(noAction)
+        present(alertController, animated: true, completion: nil)
     }
 }

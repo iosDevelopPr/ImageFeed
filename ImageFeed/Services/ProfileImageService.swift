@@ -13,7 +13,6 @@ final class ProfileImageService {
     
     private var task: URLSessionTask?
     private let urlSession: URLSession = .shared
-    private let logger: Logging = .shared
     private let decoder = JSONDecoder()
     private(set) var avatarURL: String?
     
@@ -25,7 +24,7 @@ final class ProfileImageService {
         
         guard let token = OAuth2ServiceStorage.shared.token,
               let request = makeGetUserRequest(token: token, user: username) else {
-            logger.log("Не удалось создать запрос для изображения профиля")
+            Logging.shared.log("Не удалось создать запрос для изображения профиля")
             completion(.failure(NetworkError.invalidRequest))
             return
         }
@@ -38,10 +37,11 @@ final class ProfileImageService {
                 self.avatarURL = userResult.profileImage.small
                 completion(.success(userResult.profileImage.small))
                 
-                NotificationCenter.default.post(name: ProfileImageService.didChangeNotification, object: self,
-                                                userInfo: ["URL": self.avatarURL as Any])
+                NotificationCenter.default.post(name: ProfileImageService.didChangeNotification,
+                    object: self, userInfo: ["URL": self.avatarURL as Any])
+                
             case .failure(let error):
-                self.logger.log("Не удалось получить изображение профиля: \(error)")
+                Logging.shared.log("Не удалось получить изображение профиля: \(error)")
                 completion(.failure(NetworkError.decodingError(error)))
             }
         }
@@ -57,5 +57,14 @@ final class ProfileImageService {
         request.httpMethod = HTTPMethod.get.rawValue
         
         return request
+    }
+}
+
+extension ProfileImageService {
+    func removeData() {
+        task?.cancel()
+        task = nil
+        
+        avatarURL = nil
     }
 }
