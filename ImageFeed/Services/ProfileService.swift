@@ -21,7 +21,7 @@ final class ProfileService {
         task?.cancel()
         
         guard let request = makeGetRequest(token: token) else {
-            logger.log("Не удалось создать запрос профиля")
+            Logging.shared.log("Не удалось создать запрос профиля")
             completion(.failure(NetworkError.invalidRequest))
             return
         }
@@ -35,11 +35,11 @@ final class ProfileService {
                     if let profile = self?.profile {
                         completion(.success(profile))
                     } else {
-                        logger.log("Получена пустая модель профиля")
+                        Logging.shared.log("Получена пустая модель профиля")
                         completion(.failure(NetworkError.emptyData))
                     }
                 case .failure(let error):
-                    logger.log("Ошибка при получении профиля: \(error)")
+                    Logging.shared.log("Ошибка при получении профиля: \(error)")
                     completion(.failure(error))
                 }
             }
@@ -62,10 +62,10 @@ final class ProfileService {
     private func makeProfile(profileResult: ProfileResult) -> Profile {
         let profile = Profile(
             username: profileResult.username,
-            name: "\(profileResult.firstName) \(profileResult.lastName)"
+            name: "\(profileResult.firstName) \(profileResult.lastName ?? "")"
                 .trimmingCharacters(in: .whitespaces),
             loginName: "@\(profileResult.username)",
-            bio: profileResult.bio)
+            bio: profileResult.bio ?? "")
         return profile
     }
 }

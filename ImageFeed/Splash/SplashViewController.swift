@@ -88,7 +88,7 @@ extension SplashViewController: AuthViewControllerDelegate {
                 ProfileImageService.shared.fetchProfileImageURL(username: profile.username) { _ in }
                 self?.switchToTabBarController()
             case .failure(let error):
-                logger.log("Failed to fetch profile: \(error)")
+                Logging.shared.log("Failed to fetch profile: \(error)")
                 break
             }
         }

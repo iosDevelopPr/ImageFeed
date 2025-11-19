@@ -41,7 +41,7 @@ final class OAuth2Service {
                 case .success(let jsonData):
                     completion(.success(jsonData.accessToken))
                 case .failure(let error):
-                    logger.log("Failed to fetch OAuth token: \(error)")
+                    Logging.shared.log("Failed to fetch OAuth token: \(error)")
                     completion(.failure(error))
                 }
                 self?.task = nil

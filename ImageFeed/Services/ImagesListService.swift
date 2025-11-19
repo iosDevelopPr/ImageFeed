@@ -27,7 +27,7 @@ final class ImagesListService {
 
         guard let token = OAuth2ServiceStorage.shared.token,
               let request = makeGetListRequest(token: token) else {
-            logger.log("Не удалось создать запрос для изображения профиля")
+            Logging.shared.log("Не удалось создать запрос для изображения профиля")
             return
         }
         
@@ -46,7 +46,7 @@ final class ImagesListService {
                     userInfo: ["Images": self.photos]
                 )
             case .failure(let error):
-                logger.log("Ошибка при получении изображений: \(error)")
+                Logging.shared.log("Ошибка при получении изображений: \(error)")
             }
             self.task = nil
         }
@@ -83,7 +83,7 @@ final class ImagesListService {
         
         guard let token = OAuth2ServiceStorage.shared.token,
               let request = makeLikePhotoRequest(token: token, photoId: photoId, isLike: isLike) else {
-            logger.log("Не удалось создать запрос для изменения лайка")
+            Logging.shared.log("Не удалось создать запрос для изменения лайка")
             return
         }
         
@@ -94,7 +94,7 @@ final class ImagesListService {
             case .success(let data):
                 completion(.success(()))
             case .failure(let error):
-                logger.log("Ошибка при изменении лайка: \(error)")
+                Logging.shared.log("Ошибка при изменении лайка: \(error)")
                 completion(.failure(error))
             }
             self.task = nil

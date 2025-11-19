@@ -24,7 +24,7 @@ final class ProfileImageService {
         
         guard let token = OAuth2ServiceStorage.shared.token,
               let request = makeGetUserRequest(token: token, user: username) else {
-            logger.log("Не удалось создать запрос для изображения профиля")
+            Logging.shared.log("Не удалось создать запрос для изображения профиля")
             completion(.failure(NetworkError.invalidRequest))
             return
         }
@@ -41,7 +41,7 @@ final class ProfileImageService {
                     object: self, userInfo: ["URL": self.avatarURL as Any])
                 
             case .failure(let error):
-                logger.log("Не удалось получить изображение профиля: \(error)")
+                Logging.shared.log("Не удалось получить изображение профиля: \(error)")
                 completion(.failure(NetworkError.decodingError(error)))
             }
         }

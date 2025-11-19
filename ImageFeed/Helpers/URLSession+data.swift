@@ -60,7 +60,7 @@ extension URLSession {
                     let decodedObject = try URLSession.decoder.decode(T.self, from: data)
                     completion(.success(decodedObject))
                 } catch {
-                    logger.log("Failed to decode data to \(T.self): \(error)")
+                    Logging.shared.log("Failed to decode data to \(T.self): \(error)")
                     completion(.failure(NetworkError.decodingError(error)))
                 }
             case .failure(let error):
