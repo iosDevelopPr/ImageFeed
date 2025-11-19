@@ -11,7 +11,6 @@ final class ProfileService {
     static let shared = ProfileService()
     private var task: URLSessionTask?
     private let urlSession: URLSession = .shared
-    private let logger: Logging = .shared
     private let decoder = JSONDecoder()
     private(set) var profile: Profile?
     
@@ -28,21 +27,19 @@ final class ProfileService {
         }
         
         task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
-            guard let self else { return }
-            
             DispatchQueue.main.async {
                 switch result {
                 case .success(let profileResult):
-                    self.profile = self.makeProfile(profileResult: profileResult)
+                    self?.profile = self?.makeProfile(profileResult: profileResult)
                     
-                    if let profile = self.profile {
+                    if let profile = self?.profile {
                         completion(.success(profile))
                     } else {
-                        self.logger.log("Получена пустая модель профиля")
+                        logger.log("Получена пустая модель профиля")
                         completion(.failure(NetworkError.emptyData))
                     }
                 case .failure(let error):
-                    self.logger.log("Ошибка при получении профиля: \(error)")
+                    logger.log("Ошибка при получении профиля: \(error)")
                     completion(.failure(error))
                 }
             }
@@ -70,5 +67,14 @@ final class ProfileService {
             loginName: "@\(profileResult.username)",
             bio: profileResult.bio)
         return profile
+    }
+}
+
+extension ProfileService {
+    func removeData() {
+        task?.cancel()
+        task = nil
+        
+        profile = nil
     }
 }

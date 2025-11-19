@@ -10,7 +10,6 @@ import UIKit
 final class AuthViewController: UIViewController {
     private let showWebViewSegueIdentifier = "ShowWebView"
     private let oauth2Service: OAuth2Service = .shared
-    private let oauth2Storage: OAuth2ServiceStorage = .shared
     
     weak var delegate: AuthViewControllerDelegate?
     
@@ -49,13 +48,15 @@ extension AuthViewController: WebViewViewControllerDelegate {
             UIBlockingProgressHUD.dismiss()
             guard let self else { return }
             
-            switch result {
-            case .success(let token):
-                self.oauth2Storage.token = token
-                self.delegate?.didAuthenticate(self)
-            case .failure:
-                self.showAuthErrorAlert()
-                break
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let token):
+                    OAuth2ServiceStorage.shared.token = token
+                    self.delegate?.didAuthenticate(self)
+                case .failure:
+                    self.showAuthErrorAlert()
+                    break
+                }
             }
         }
     }

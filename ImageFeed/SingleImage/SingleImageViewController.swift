@@ -40,6 +40,7 @@ final class SingleImageViewController: UIViewController {
             activityItems: [image],
             applicationActivities: nil
         )
+        share.popoverPresentationController?.sourceView = self.view
         present(share, animated: true, completion: nil)
     }
     
@@ -48,6 +49,8 @@ final class SingleImageViewController: UIViewController {
         
         imageView.image = image
         imageView.frame.size = image.size
+        imageView.contentMode = .scaleAspectFit
+        
         rescaleAndCenterImageInScrollView(image: image)
     }
     
@@ -66,12 +69,13 @@ final class SingleImageViewController: UIViewController {
         scrollView.setZoomScale(scale, animated: false)
         scrollView.layoutIfNeeded()
         
-        let newContentSize = scrollView.contentSize
+        let imageframeSize = imageView.frame.size
         
-        let x = (newContentSize.width - visibleRectSize.width) / 2
-        let y = (newContentSize.height - visibleRectSize.height) / 2
+        let centerX = max((visibleRectSize.width - imageframeSize.width) / 2, 0)
+        let centerY = max((visibleRectSize.height - imageframeSize.height) / 2, 0)
         
-        scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
+        scrollView.contentInset = UIEdgeInsets(
+            top: centerY, left: centerX, bottom: centerY, right: centerX)
     }
 }
 
