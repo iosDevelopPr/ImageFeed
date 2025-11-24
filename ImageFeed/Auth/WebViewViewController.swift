@@ -9,35 +9,34 @@ import UIKit
 import WebKit
 
 final class WebViewViewController: UIViewController {
-    
+
     @IBOutlet private weak var webView: WKWebView!
     @IBOutlet private weak var progressView: UIProgressView!
     private var estimatedProgressObservation: NSKeyValueObservation?
 
     weak var delegate: WebViewViewControllerDelegate?
-    
+    var presenter: WebViewPresenterProtocol?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         webView.navigationDelegate = self        
-        loadAuthView()
+        
+        presenter?.viewDidLoad()
+        presenter?.didUpdateProgressValue(webView.estimatedProgress)
         
         estimatedProgressObservation = webView.observe(\.estimatedProgress, options: [], changeHandler: { [weak self] _, _ in
             guard let self else {return}
-            self.updateProgress()
+            self.presenter?.didUpdateProgressValue(webView.estimatedProgress)
         })
     }
     
-    private func updateProgress() {
-        progressView.progress = Float(webView.estimatedProgress)
-        progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
+    func setProgressValue(_ newValue: Float) {
+        progressView.progress = newValue
     }
     
-    func loadAuthView() {
-        guard let request = OAuth2Service.shared.makeOAuthViewRequest() else { return }
-        
-        webView.load(request)
-        updateProgress()
+    func setProgressHidden(_ isHidden: Bool) {
+        progressView.isHidden = isHidden
     }
 }
 
@@ -56,16 +55,15 @@ extension WebViewViewController: WKNavigationDelegate {
     }
     
     private func code(from navigationAction: WKNavigationAction) -> String? {
-        if
-            let url = navigationAction.request.url,
-            let urlComponents = URLComponents(string: url.absoluteString),
-            urlComponents.path == "/oauth/authorize/native",
-            let item = urlComponents.queryItems,
-            let codeItem = item.first(where: { $0.name == "code" })
-        {
-            return codeItem.value
-        } else {
-            return nil
+        if let url = navigationAction.request.url {
+            return presenter?.code(from: url)
         }
+        return nil
+    }
+}
+
+extension WebViewViewController: WebViewViewControllerProtocol {
+    func load(request: URLRequest) {
+        webView.load(request)
     }
 }

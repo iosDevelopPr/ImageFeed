@@ -7,9 +7,7 @@
 
 import UIKit
 
-final class ImagesListCell: UITableViewCell {
-    
-    static let reuseIdentifier = "ImagesListCell"
+public final class ImagesListCell: UITableViewCell {
     
     @IBOutlet weak var likeButton: UIButton!
     @IBOutlet weak var cellImage: UIImageView!
@@ -18,7 +16,7 @@ final class ImagesListCell: UITableViewCell {
     
     weak var delegate: ImagesListCellDelegate?
     
-    override func prepareForReuse() {
+    public override func prepareForReuse() {
         super.prepareForReuse()
         cellImage.kf.cancelDownloadTask()
     }

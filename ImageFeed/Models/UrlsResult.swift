@@ -12,7 +12,7 @@ struct UrlsResult: Decodable {
     let largeImageURL: String?
     
     enum CodingKeys: String, CodingKey {
-        case thumbImageURL = "thumb"
+        case thumbImageURL = "small"    // Сделано сознательно - ошибкой не является!
         case largeImageURL = "full"
     }
 }
