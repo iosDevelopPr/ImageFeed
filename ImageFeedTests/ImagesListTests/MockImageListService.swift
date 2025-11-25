@@ -11,7 +11,7 @@ import Foundation
 final class MockImageListService: ImagesListServiceProtocol {
     var photos: [Photo] = []
     var fetchPhotosNextPageCalled: Bool = false
-    var chengeLikeCalled: Bool = false
+    var changeLikeCalled: Bool = false
     
     init() {
         photos.append(Photo(id: "1", createdAt: nil, thumbImageURL: "", largeImageURL: "", isLiked: true, size: CGSize(width: 0, height: 0)))
@@ -26,7 +26,7 @@ final class MockImageListService: ImagesListServiceProtocol {
     }
     
     func sendImageLike(photoId: String, isLike: Bool, completion: @escaping (Result<Void, any Error>) -> Void) {
-        chengeLikeCalled = true
+        changeLikeCalled = true
         completion(.success(()))
     }
 }

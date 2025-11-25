@@ -91,7 +91,7 @@ final class ImagesListService: ImagesListServiceProtocol {
             guard let self else { return }
             
             switch result {
-            case .success(_):
+            case .success:
                 completion(.success(()))
             case .failure(let error):
                 Logging.shared.log("Ошибка при изменении лайка: \(error)")

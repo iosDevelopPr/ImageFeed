@@ -9,7 +9,7 @@ import UIKit
 
 final class AuthViewController: UIViewController {
     
-    @IBOutlet weak var authButton: UIButton!
+    @IBOutlet private weak var authButton: UIButton!
     
     private let showWebViewSegueIdentifier = "ShowWebView"
     private let oauth2Service: OAuth2Service = .shared

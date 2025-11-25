@@ -21,7 +21,10 @@ final class TabBarController: UITabBarController {
         
         guard let imagesListViewController = storyboard.instantiateViewController(
             withIdentifier: ImagesListIdentifier) as? ImagesListViewController
-                else { fatalError("Не удалось создать ImagesListViewController") }
+        else {
+            assertionFailure("Не удалось создать ImagesListViewController")
+            return
+        }
         
         let imagesListPresenter = ImagesListPresenter()
         imagesListViewController.configure(presenter: imagesListPresenter)

@@ -47,7 +47,7 @@ final class ImagesListViewTests: XCTestCase {
         
         presenter.changeLike(index: indexPath.row, ) { state in
             XCTAssertEqual(state, false)
-            XCTAssertTrue(mockService.chengeLikeCalled)
+            XCTAssertTrue(mockService.changeLikeCalled)
             expectation.fulfill()
         }
         

@@ -7,16 +7,16 @@
 
 import Foundation
 
-final class AuthHelper: AuthHelperProtocol {
+final class AuthHelper: AuthHelperProtocol {    
     private let configuration: AuthConfiguration
+    
+    var authURLRequest: URLRequest? {
+        guard let url = authURL() else { return nil }
+        return URLRequest(url: url)
+    }
     
     init(configuration: AuthConfiguration = .standard) {
         self.configuration = configuration
-    }
-    
-    func authRequest() -> URLRequest? {
-        guard let url = authURL() else { return nil }
-        return URLRequest(url: url)
     }
     
     func authURL() -> URL? {
@@ -32,7 +32,7 @@ final class AuthHelper: AuthHelperProtocol {
         return urlComponents.url
     }
     
-    func code(from url: URL) -> String? {
+    func getCode(from url: URL) -> String? {
         if let urlComponents = URLComponents(string: url.absoluteString),
            urlComponents.path == "/oauth/authorize/native",
            let item = urlComponents.queryItems,
