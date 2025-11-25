@@ -8,6 +8,9 @@
 import UIKit
 
 final class AuthViewController: UIViewController {
+    
+    @IBOutlet weak var authButton: UIButton!
+    
     private let showWebViewSegueIdentifier = "ShowWebView"
     private let oauth2Service: OAuth2Service = .shared
     
@@ -15,6 +18,8 @@ final class AuthViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        authButton.accessibilityIdentifier = "authButton"
         
         configureBackButton()
     }

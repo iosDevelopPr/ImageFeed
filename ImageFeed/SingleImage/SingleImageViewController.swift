@@ -28,6 +28,7 @@ public final class SingleImageViewController: UIViewController {
         scrollView.maximumZoomScale = 1.25
         
         updateImageView()
+        initBackButton()
     }
     
     @IBAction private func didTapBackButton(_ sender: UIButton) {
@@ -76,6 +77,10 @@ public final class SingleImageViewController: UIViewController {
         
         scrollView.contentInset = UIEdgeInsets(
             top: centerY, left: centerX, bottom: centerY, right: centerX)
+    }
+    
+    private func initBackButton() {
+        backButton.accessibilityIdentifier = "backButton"
     }
 }
 

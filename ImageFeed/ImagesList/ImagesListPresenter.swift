@@ -17,13 +17,13 @@ final class ImagesListPresenter: @MainActor ImagesListPresenterProtocol {
     private var imagesListService: ImagesListServiceProtocol?
     private var imagesListServiceObserver: NSObjectProtocol?
 
-    private lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        formatter.locale = Locale(identifier: "ru_RU")
-        return formatter
-    }()
+//    private lazy var dateFormatter: DateFormatter = {
+//        let formatter = DateFormatter()
+//        formatter.dateStyle = .medium
+//        formatter.timeStyle = .none
+//        formatter.locale = Locale(identifier: "ru_RU")
+//        return formatter
+//    }()
 
     init(imagesListService: ImagesListServiceProtocol? = ImagesListService.shared) {
         self.imagesListService = imagesListService
@@ -87,19 +87,21 @@ final class ImagesListPresenter: @MainActor ImagesListPresenterProtocol {
             let thumbImageURL = photo.thumbImageURL,
             let imageUrl = URL(string: thumbImageURL)
         else { return }
+//        
+//        let placeholder = UIImage(resource: .placeholder)
         
-        let placeholder = UIImage(resource: .placeholder)
-        
-        cell.cellImage.kf.indicatorType = .activity
-        cell.cellImage.kf.setImage(with: imageUrl, placeholder: placeholder) { _ in
-            cell.cellImage.kf.indicatorType = .none
-        }
-
-        if let date = photo.createdAt {
-            cell.dateLabel.text = dateFormatter.string(from: date)
-        } else {
-            cell.dateLabel.text = ""
-        }
+        cell.configCell(url: imageUrl, date: photo.createdAt)
+//        
+//        cell.cellImage.kf.indicatorType = .activity
+//        cell.cellImage.kf.setImage(with: imageUrl, placeholder: placeholder) { _ in
+//            cell.cellImage.kf.indicatorType = .none
+//        }
+//
+//        if let date = photo.createdAt {
+//            cell.dateLabel.text = dateFormatter.string(from: date)
+//        } else {
+//            cell.dateLabel.text = ""
+//        }
         completion(photo.isLiked)
     }
 

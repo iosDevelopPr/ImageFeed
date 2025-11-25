@@ -20,9 +20,6 @@ final class ImagesListViewController: UIViewController {
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         presenter?.showSingleImage(for: segue, sender: sender)
-//        } else {
-//            super.prepare(for: segue, sender: sender)
-//        }
     }
     
     func updateTableViewAnimated(oldCount: Int, newCount: Int) {
