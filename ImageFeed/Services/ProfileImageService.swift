@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class ProfileImageService {
+final class ProfileImageService : ProfileImageServiceProtocol {
     static let shared = ProfileImageService()
     static let didChangeNotification = Notification.Name("ProfileImageProviderDidChange")
     
@@ -18,7 +18,7 @@ final class ProfileImageService {
     
     private init() {}
     
-    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
+    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, any Error>) -> Void) {
         assert(Thread.isMainThread)
         task?.cancel()
         

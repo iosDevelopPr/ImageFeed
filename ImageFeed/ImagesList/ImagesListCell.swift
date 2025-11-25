@@ -6,10 +6,9 @@
 //
 
 import UIKit
+import Kingfisher
 
-final class ImagesListCell: UITableViewCell {
-    
-    static let reuseIdentifier = "ImagesListCell"
+public final class ImagesListCell: UITableViewCell {
     
     @IBOutlet weak var likeButton: UIButton!
     @IBOutlet weak var cellImage: UIImageView!
@@ -18,7 +17,28 @@ final class ImagesListCell: UITableViewCell {
     
     weak var delegate: ImagesListCellDelegate?
     
-    override func prepareForReuse() {
+    private lazy var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        formatter.locale = Locale(identifier: "ru_RU")
+        return formatter
+    }()
+
+    func configCell(url: URL, date: Date?) {
+        likeButton.accessibilityIdentifier = "likeButton"
+        
+        let placeholder = UIImage(resource: .placeholder)
+
+        cellImage.kf.indicatorType = .activity
+        cellImage.kf.setImage(with: url, placeholder: placeholder) { _ in
+            self.cellImage.kf.indicatorType = .none
+        }
+        
+        dateLabel.text = dateFormatter.string(from: date ?? Date())
+    }
+    
+    public override func prepareForReuse() {
         super.prepareForReuse()
         cellImage.kf.cancelDownloadTask()
     }

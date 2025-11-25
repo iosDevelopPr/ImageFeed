@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class ImagesListService {
+final class ImagesListService: ImagesListServiceProtocol {    
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     static let shared: ImagesListService = ImagesListService()
     
@@ -67,7 +67,7 @@ final class ImagesListService {
     }
     
     private func getPhoto(photoResult: PhotoResult) -> Photo {
-        Photo.init(
+        return Photo.init(
             id: photoResult.id,
             createdAt: photoResult.createdAt,
             thumbImageURL: photoResult.urls?.thumbImageURL,
@@ -91,7 +91,7 @@ final class ImagesListService {
             guard let self else { return }
             
             switch result {
-            case .success(let data):
+            case .success:
                 completion(.success(()))
             case .failure(let error):
                 Logging.shared.log("Ошибка при изменении лайка: \(error)")

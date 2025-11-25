@@ -8,6 +8,9 @@
 import UIKit
 
 final class AuthViewController: UIViewController {
+    
+    @IBOutlet private weak var authButton: UIButton!
+    
     private let showWebViewSegueIdentifier = "ShowWebView"
     private let oauth2Service: OAuth2Service = .shared
     
@@ -15,6 +18,8 @@ final class AuthViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        authButton.accessibilityIdentifier = "authButton"
         
         configureBackButton()
     }
@@ -26,6 +31,11 @@ final class AuthViewController: UIViewController {
                 return
             }
             webViewViewController.delegate = self
+            
+            let authHelper = AuthHelper()
+            let webViewPresenter = WebViewPresenter(authHelper: authHelper)
+            webViewViewController.presenter = webViewPresenter
+            webViewPresenter.view = webViewViewController
         } else {
             super.prepare(for: segue, sender: sender)
         }

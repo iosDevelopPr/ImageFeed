@@ -18,37 +18,16 @@ final class ProfileViewController: UIViewController {
     private var profileImage: UIImage?
     
     private var profileImageServiceObserver: NSObjectProtocol?
+    var presenter: ProfilePresenterProtocol?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupProfileImage()
-        setupNameLabel()
-        setupLoginLabel()
-        setupDescriptionLabel()
-        setupExitButton()
-        
-        guard let profileDetails = ProfileService.shared.profile else { return }
-        updateProfileDetails(profile: profileDetails)
-        
-        profileImageServiceObserver = NotificationCenter.default.addObserver(
-            forName: ProfileImageService.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
-            guard let self else { return }
-                self.updateAvatar()
-        }
-        updateAvatar()
-    }
-    
-    private func updateAvatar() {
-        guard let profileImageURL = ProfileImageService.shared.avatarURL,
-              let url = URL(string: profileImageURL) else { return }
-        
-        let processor = RoundCornerImageProcessor(cornerRadius: 50)
-        profileImageView.kf.setImage(with: url, placeholder: profileImage, options: [.processor(processor)])
+        presenter?.viewDidLoad()
     }
     
     @objc private func didTapExitButton(_ sender: Any) {
-        showAuthErrorAlert()
+        presenter?.logoutButtonTapped()
     }
     
     private func setupProfileImage() {
@@ -109,6 +88,7 @@ final class ProfileViewController: UIViewController {
         exitButton.setImage(exitImage, for: .normal)
         exitButton.addTarget(self, action: #selector(didTapExitButton(_:)), for: .touchUpInside)
         
+        exitButton.accessibilityIdentifier = "logoutButton"
         exitButton.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(exitButton)
@@ -121,27 +101,35 @@ final class ProfileViewController: UIViewController {
             exitButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 45)
         ])
     }
+}
+
+extension ProfileViewController: ProfileViewControllerProtocol {
+    func configure(presenter: ProfilePresenterProtocol) {
+        self.presenter = presenter
+        presenter.view = self
+    }
     
-    private func updateProfileDetails(profile: Profile) {
+    func setupViewUI() {
+        setupProfileImage()
+        setupNameLabel()
+        setupLoginLabel()
+        setupDescriptionLabel()
+        setupExitButton()
+    }
+    
+    func showLogoutAlert(alertController: UIAlertController?) {
+        guard let alertController else { return }
+        present(alertController, animated: true)
+    }
+    
+    func updateProfileDetails(profile: Profile) {
         nameLabel.text = profile.name
         loginLabel.text = profile.loginName
         descriptionLabel.text = profile.bio
     }
-}
-extension ProfileViewController {
-    func showAuthErrorAlert() {
-        let alertController = UIAlertController(
-            title: "Пока, пока!",
-            message: "Уверены, что хотите выйти?",
-            preferredStyle: .alert
-        )
-        let okAction = UIAlertAction(title: "Да", style: .default) { _ in
-            ProfileLogoutService.shared.removeData()
-        }
-        let noAction = UIAlertAction(title: "Нет", style: .default) { _ in }
-
-        alertController.addAction(okAction)
-        alertController.addAction(noAction)
-        present(alertController, animated: true, completion: nil)
+    
+    func updateAvatarDetails(url: URL?) {
+        let processor = RoundCornerImageProcessor(cornerRadius: 50)
+        profileImageView.kf.setImage(with: url, placeholder: profileImage, options: [.processor(processor)])
     }
 }

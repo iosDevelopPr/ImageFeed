@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class SingleImageViewController: UIViewController {
+public final class SingleImageViewController: UIViewController {
     
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var scrollView: UIScrollView!
@@ -21,13 +21,14 @@ final class SingleImageViewController: UIViewController {
         }
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
         
         updateImageView()
+        initBackButton()
     }
     
     @IBAction private func didTapBackButton(_ sender: UIButton) {
@@ -77,13 +78,17 @@ final class SingleImageViewController: UIViewController {
         scrollView.contentInset = UIEdgeInsets(
             top: centerY, left: centerX, bottom: centerY, right: centerX)
     }
+    
+    private func initBackButton() {
+        backButton.accessibilityIdentifier = "backButton"
+    }
 }
 
 extension SingleImageViewController: UIScrollViewDelegate {
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+    public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
     }
-    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+    public func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
         let scrollSize = scrollView.bounds.size
         let imageSize = imageView.frame.size
         

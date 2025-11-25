@@ -12,6 +12,8 @@ final class SplashViewController: UIViewController {
 
     private let oauthStorage: OAuth2ServiceStorage = .shared
     private let profileService: ProfileService = .shared
+    private let profileImageService: ProfileImageService = .shared
+    private let imagesListService: ImagesListService = .shared
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -85,8 +87,10 @@ extension SplashViewController: AuthViewControllerDelegate {
             
             switch result {
             case .success(let profile):
-                ProfileImageService.shared.fetchProfileImageURL(username: profile.username) { _ in }
+                self?.profileImageService.fetchProfileImageURL(username: profile.username) { _ in }
                 self?.switchToTabBarController()
+                self?.imagesListService.fetchPhotosNextPage()
+                
             case .failure(let error):
                 Logging.shared.log("Failed to fetch profile: \(error)")
                 break
